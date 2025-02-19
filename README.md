@@ -1,6 +1,6 @@
 # PartSDF
 This is the PyTorch implementation of the paper "**PartSDF: Part-Based Implicit Neural Representation for Composite 3D Shape Parametrization and Optimization**".   
-**[[Paper]()]**
+**[[Paper](https://arxiv.org/abs/2502.12985)]**
 
 <p style="display: flex; align-items: center;">
     <img src="imgs/pipeline.png" alt="PartSDF pipeline" height="300"/>
@@ -116,12 +116,19 @@ The metric values will be saved per-shape under `<experiments/expdir>/evaluation
 ## Citation
 If you found PartSDF useful for your work, please cite us:
 ```
-@todo{}
+@misc{talabot2025partsdf,
+    title={PartSDF: Part-Based Implicit Neural Representation for Composite 3D Shape Parametrization and Optimization}, 
+    author={Nicolas Talabot and Olivier Clerc and Arda Cinar Demirtas and Doruk Oner and Pascal Fua},
+    year={2025},
+    eprint={2502.12985},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+    url={https://arxiv.org/abs/2502.12985}
+}
 ```
 
 
 ## TODO
-* [ ] ArXiv links and citation
 * [ ] Make `scripts/data_fit_primitive.py` configurable *per-parts*
 * [ ] Notebook for shape manipulation
 * [ ] Model checkpoints
