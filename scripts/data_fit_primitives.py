@@ -7,6 +7,7 @@ Note: can use the convex hull of the parts to fit the primitives.
 import os, os.path
 import sys
 import argparse
+import json
 from math import ceil
 from multiprocessing import Process
 
@@ -221,7 +222,7 @@ def reorient_cylinder(ref_quaternion, quaternion):
     result = opt.minimize(x_scalar_product, 0., bounds=[(-180, 180)])
     if not result.success:
         print(result.message)
-    theta = result.x
+    theta = result.x[0]
     matrix = matrix @ Rotation.from_euler('z', theta, degrees=True).as_matrix()
     return standardize_quaternion(matrix_to_quaternion(matrix))
 
@@ -233,19 +234,20 @@ def reorient_cylinder(ref_quaternion, quaternion):
 def fit_primitives(args, partdir, instances, pid=None):
     """Fit primitives to the given shape instances."""
     if pid is not None:  # print with process id
-        _print = print
-        def print(*args, **kwargs):
-            _print(f"P{pid}: ", sep="", end="", flush=True)
-            return _print(*args, **kwargs)
+        def iprint(*args, **kwargs):
+            print(f"P{pid}: ", sep="", end="", flush=True)
+            return print(*args, **kwargs)
+    else:
+        iprint = print
         
     # Reference quaternion/orientation
-    ref_quaternion = standardize_quaternion(np.array(args.ref_quaternion))
+    ref_quaternions = standardize_quaternion(np.array(args.ref_quaternion))
 
     n_shapes = len(instances)
-    print(f"{n_shapes} shapes to process:")
+    iprint(f"{n_shapes} shapes to process:")
     for i, instance in enumerate(instances):
         if (i+1) % max(1, n_shapes//5) == 0:
-            print(f"Generating for shape {i+1}/{n_shapes}...")
+            iprint(f"Generating for shape {i+1}/{n_shapes}...")
 
         # Load the parts
         parts = load_parts(partdir, instance, args.n_parts)
@@ -266,16 +268,17 @@ def fit_primitives(args, partdir, instances, pid=None):
 
         # Fit primitives to the parts
         for j, part in enumerate(parts):
+            ref_quaternion = ref_quaternions[j]
             if part.is_empty:
                 quaternions.append(np.full(4, np.nan))
                 translations.append(np.full(3, np.nan))
                 scales.append(np.full(3, np.nan))
                 continue
-            if args.primitive == "cuboid":
+            if args.primitive[j] == "cuboid":
                 convex_hull, scale, translation, quaternion = init_cuboid(part, ref_quaternion)
                 scale, translation, quaternion = fit_cuboid(convex_hull, scale, translation, quaternion, 
-                                                            n_samples=args.n_samples, fixed_rotation=args.fixed_rotation)
-                if args.reorient:
+                                                            n_samples=args.pc_size, fixed_rotation=args.fixed_rotation[j])
+                if args.reorient[j]:
                     quaternion, scale = reorient_cuboid(ref_quaternion, quaternion, scale)
                 cuboid = mesh_cuboid(scale, translation, quaternion)
                 # Save the results
@@ -283,11 +286,11 @@ def fit_primitives(args, partdir, instances, pid=None):
                          translation=translation, quaternion=quaternion)
                 cuboid.export(os.path.join(primdir, f"part{j}_cuboid.obj"))
                 scale /= 2  # half-lengths
-            elif args.primitive == "cylinder":
+            elif args.primitive[j] == "cylinder":
                 convex_hull, radius, height, translation, quaternion = init_cylinder(part, ref_quaternion)
                 radius, height, translation, quaternion = fit_cylinder(convex_hull, radius, height, translation, quaternion, 
-                                                                       n_samples=args.pc_size, fixed_rotation=args.fixed_rotation)
-                if args.reorient:
+                                                                       n_samples=args.pc_size, fixed_rotation=args.fixed_rotation[j])
+                if args.reorient[j]:
                     quaternion = reorient_cylinder(ref_quaternion, quaternion)
                 cylinder = mesh_cylinder(radius, height, translation, quaternion)
                 # Save the results
@@ -310,7 +313,7 @@ def fit_primitives(args, partdir, instances, pid=None):
         # Delete variables as there seems to be a weird memory leak?
         del quaternions, translations, scales, parts
 
-    print("Done.")
+    iprint("Done.")
 
 
 def main(args):
@@ -355,6 +358,9 @@ if __name__ == "__main__":
     
     parser.add_argument("--partdir", default="parts", type=str, help="name of the subdir where the part decomposition will be saved")
 
+    # Spec file describing the primitives
+    parser.add_argument("--specs", default=None, type=str, help="specs file with primitives argument, if used, will overwrite command line arguments")
+    # OR manually
     parser.add_argument("--fixed-rotation", action="store_true", help="fix the rotation of the primitive to the initial orientation (:=the reference)")
     parser.add_argument("--no-reorient", action="store_false", dest="reorient", help="do not re-orient the primitives to a reference to break symmetries")
     parser.add_argument("--primitive", default="cuboid", choices=["cuboid", "cylinder"], help="primitive to use (default: cuboid)")
@@ -366,5 +372,23 @@ if __name__ == "__main__":
     parser.add_argument("--seed", default=0, type=int, help="seed for the RNGs")
 
     args = parser.parse_args()
+
+    # Load specs, if given
+    if args.specs is not None:
+        with open(args.specs, 'r') as f:
+            specs = json.load(f)
+        args.fixed_rotation = specs.get("fixed_rotation", args.fixed_rotation)
+        args.reorient = specs.get("reorient", args.reorient)
+        args.primitive = specs.get("primitive", args.primitive)
+        args.ref_quaternion = specs.get("ref_quaternion", args.ref_quaternion)
+    # Duplicate single arguments for each part
+    if not isinstance(args.fixed_rotation, list):
+        args.fixed_rotation = [args.fixed_rotation] * args.n_parts
+    if not isinstance(args.reorient, list):
+        args.reorient = [args.reorient] * args.n_parts
+    if not isinstance(args.primitive, list):
+        args.primitive = [args.primitive] * args.n_parts
+    if not isinstance(args.ref_quaternion[0], list):
+        args.ref_quaternion = [args.ref_quaternion] * args.n_parts
 
     main(args)

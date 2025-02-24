@@ -33,7 +33,8 @@ def normalize_mesh(mesh):
     T = -mesh.bounds.mean(0)
     mesh.apply_translation(T)
     # 2. Rotate it toward +x (!depends on the dataset!)
-    R = rotation_matrix(-np.pi / 2, [0, 1, 0])
+    R = np.eye(4)
+    # R = rotation_matrix(-np.pi / 2, [0, 1, 0])  # example
     mesh.apply_transform(R)
     # 3. Normalize it to [-0.9, +0.9] cube
     S = 2. * SCALE / np.max(mesh.extents)
@@ -44,16 +45,17 @@ def normalize_mesh(mesh):
 def normalize_meshes(args, source, dest, instances, pid=None):
     """Copy and normalize all meshes in the given list of instances."""
     if pid is not None:  # print with process id
-        _print = print
-        def print(*args, **kwargs):
-            _print(f"P{pid}: ", sep="", end="", flush=True)
-            return _print(*args, **kwargs)
+        def iprint(*args, **kwargs):
+            print(f"P{pid}: ", sep="", end="", flush=True)
+            return print(*args, **kwargs)
+    else:
+        iprint = print
     
     n_shapes = len(instances)
-    print(f"{n_shapes} shapes to process:")
+    iprint(f"{n_shapes} shapes to process:")
     for i, instance in enumerate(instances):
         if (i+1) % max(1, n_shapes//5) == 0:
-            print(f"Normalizing shape {i+1}/{n_shapes}...")
+            iprint(f"Normalizing shape {i+1}/{n_shapes}...")
 
         if not args.overwrite and os.path.isfile(os.path.join(dest, "meshes", instance + ".obj")):
             continue
@@ -63,7 +65,7 @@ def normalize_meshes(args, source, dest, instances, pid=None):
         mesh.export(os.path.join(dest, "meshes", instance + ".obj"))
         np.savez(os.path.join(dest, "normalization", instance + ".npz"), T=T, R=R, S=S)
 
-    print("Done.")
+    iprint("Done.")
 
 
 def main(args):

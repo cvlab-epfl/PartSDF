@@ -261,7 +261,7 @@ class PartSdfDataset(SampleDataset):
     """
 
     def __init__(self, datadir, split, n_samples, sampledir="samples", samplefile="deepsdf.npz",
-                 part_sampledir="parts_cuboid20/sample_labels", part_samplefile=None, balance=True):
+                 part_sampledir="parts/sample_labels", part_samplefile=None, balance=True):
         """
         Initialize the Dataset with a split of shapes.
 

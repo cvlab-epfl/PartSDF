@@ -7,6 +7,7 @@ and saves the normalized parts under ./<partdir>/meshes/.
 
 import os, os.path
 import argparse
+import re
 from math import ceil
 from multiprocessing import Process
 
@@ -18,8 +19,8 @@ from trimesh.transformations import rotation_matrix
 SCALE = 0.9  # in [-0.9, 0.9]^3 cube
 
 
-def load_part(datadir, instance, part_num, no_texture=True):
-    filename = os.path.join(datadir, instance, f"part{part_num}.obj")
+def load_part(datadir, instance, part_name, no_texture=True):
+    filename = os.path.join(datadir, instance, part_name)
     if not os.path.isfile(filename):
         return trimesh.Trimesh()
     part = trimesh.load(filename, force='mesh')
@@ -37,45 +38,46 @@ def normalize_part(part, T, R, S):
 
 
 def normalize_parts(args, source, dest, partdir, instances, pid=None):
-    """Copy and normalize all meshes in the given list of instances."""
+    """Copy and normalize all parts in the given list of instances."""
     if pid is not None:  # print with process id
-        _print = print
-        def print(*args, **kwargs):
-            _print(f"P{pid}: ", sep="", end="", flush=True)
-            return _print(*args, **kwargs)
+        def iprint(*args, **kwargs):
+            print(f"P{pid}: ", sep="", end="", flush=True)
+            return print(*args, **kwargs)
+    else:
+        iprint = print
 
     normdir = os.path.join(dest, "normalization")
     
     n_shapes = len(instances)
-    print(f"{n_shapes} shapes to process:")
+    iprint(f"{n_shapes} shapes to process:")
     for i, instance in enumerate(instances):
         if (i+1) % max(1, n_shapes//5) == 0:
-            print(f"Normalizing shape {i+1}/{n_shapes}...")
+            iprint(f"Normalizing shape {i+1}/{n_shapes}...")
 
-        # Load all parts
-        parts = [load_part(source, instance, i) for i in range(args.n_parts)]
+        os.makedirs(os.path.join(dest, partdir, "meshes", instance), exist_ok=True)
 
-        # Verify if normalized parts already exist
+        # List all parts
+        parts = sorted(os.listdir(os.path.join(source, instance)))
+        parts = [fn for fn in parts if re.fullmatch(r"part[0-9]+.obj", fn)]
+
+        # Verify if all normalized parts already exist
         skip = args.overwrite
-        for j, part in enumerate(parts):
-            if not part.is_empty:
-                skip = skip or not os.path.isfile(os.path.join(dest, partdir, "meshes", instance, f"part{j}.obj"))
-        if skip:
-            continue
+        for part in parts:
+            skip = skip or not os.path.isfile(os.path.join(dest, partdir, "meshes", instance, part))
+            if skip:
+                continue
 
         # Load the normalization of the corresponding mesh
         norm = np.load(os.path.join(normdir, instance + ".npz"))
         T, R, S = norm["T"], norm["R"], norm["S"]
 
         # Normalize and save the parts
-        os.makedirs(os.path.join(dest, partdir, "meshes", instance), exist_ok=True)
-        for j, part in enumerate(parts):
-            if part.is_empty:
-                continue
+        for fn in parts:
+            part = load_part(source, instance, fn)
             part = normalize_part(part, T, R, S)
-            part.export(os.path.join(dest, partdir, "meshes", instance, f"part{j}.obj"))
+            part.export(os.path.join(dest, partdir, "meshes", instance, fn))
 
-    print("Done.")
+    iprint("Done.")
 
 
 def main(args):

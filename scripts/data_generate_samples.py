@@ -110,16 +110,17 @@ def make_deepsdf_samples(nearsurface_fn, uniform_fn, n_uniform=25000):
 def generate_samples(args, datadir, dest, instances, pid=None):
     """Generate data samples for the given meshes."""
     if pid is not None:  # print with process id
-        _print = print
-        def print(*args, **kwargs):
-            _print(f"P{pid}: ", sep="", end="", flush=True)
-            return _print(*args, **kwargs)
+        def iprint(*args, **kwargs):
+            print(f"P{pid}: ", sep="", end="", flush=True)
+            return print(*args, **kwargs)
+    else:
+        iprint = print
 
     n_shapes = len(instances)
-    print(f"{n_shapes} shapes to process:")
+    iprint(f"{n_shapes} shapes to process:")
     for i, instance in enumerate(instances):
         if (i+1) % max(1, n_shapes//5) == 0:
-            print(f"Generating for shape {i+1}/{n_shapes}...")
+            iprint(f"Generating for shape {i+1}/{n_shapes}...")
 
         mesh = trimesh.load(os.path.join(datadir, "meshes", instance + ".obj"))
         destdir = os.path.join(dest, instance)
@@ -154,7 +155,7 @@ def generate_samples(args, datadir, dest, instances, pid=None):
                                            n_uniform=args.n_samples // 10)
             np.savez(sample_fn, **results)
             
-    print("Done.")
+    iprint("Done.")
 
 
 def main(args):
@@ -197,7 +198,7 @@ if __name__ == "__main__":
     parser.add_argument("datadir", type=str, help="directory of the dataset")
 
     parser.add_argument("--mesh-to-sdf", action='store_true', help="use the mesh-to-sdf package to compute the SDF and surface samples (useful for dirty meshes, e.g., unprocessed ShapeNet)")
-    parser.add_argument("-n", "--n-samples", default=250000, type=int, help="number of samples to generate per sampling type (unless fixed, e.g. for voxels)")
+    parser.add_argument("-n", "--n-samples", default=250000, type=int, help="number of samples to generate per sampling type")
     parser.add_argument("--nproc", default=0, type=int, help="number of processes to create to compute in parallel, give 0 to use main process (default: 0)")
     parser.add_argument("--skip-surf", action='store_true', help="do not compute surface samples")
     parser.add_argument("--overwrite", action="store_true", help="overwrite existing results, if any")

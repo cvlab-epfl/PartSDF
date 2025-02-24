@@ -14,7 +14,7 @@ This repository is organized as follow:
     ├── experiments/        <- Experimental config and results
     │   └── template/
     │       └── specs.json  <- Template experimental config
-    ├── notebooks/          <- Jupyter notebooks for testing code and visualizing results
+    ├── notebooks/          <- Jupyter notebooks for visualizing results
     ├── scripts/            <- Python scripts
     └── src/                <- Source code
 
@@ -43,6 +43,7 @@ python3 scripts/script.py [--option [VALUE]]
 Please, refer to the script itself or use the `--help` options for details regarding its options.
 
 ### Data
+(See below for the data we used in the paper.)
 
 To start, you need the meshes of the full shapes and of the individual parts, *e.g.*:
 
@@ -73,10 +74,10 @@ Build the data as follow:
 ```bash
 # 1. Normalize the meshes and parts to the [-0.9, 0.9]^3 cube
 python3 scripts/data_normalize_meshes.py <path/to/dataset_raw/meshes> <path/to/dataset> --nproc 10
-python3 scripts/data_normalize_parts.py <path/to/dataset_raw/parts/meshes> <path/to/dataset> --nproc 10
+python3 scripts/data_normalize_parts.py <path/to/dataset_raw/parts> <path/to/dataset> --nproc 10
 ```
 ```bash
-# 2. Generate the surface and SDF samples (step 4 can be done in parallel to steps 2&3)
+# 2. Generate the surface and SDF samples (step 4 can be done in parallel to steps 2&3) * 
 python3 scripts/data_generate_samples.py <path/to/dataset> --nproc 10
 ```
 ```bash
@@ -84,11 +85,13 @@ python3 scripts/data_generate_samples.py <path/to/dataset> --nproc 10
 python3 scripts/data_label_samples.py <path/to/dataset> <n_parts>  --nproc 10
 ```
 ```bash
-# 4. Fit a primitive to each part to get its pose
+# 4. Fit a primitive to each part to get its pose **
 python3 scripts/data_fit_primitives.py <path/to/dataset> <n_parts> --primitive cuboid  --nproc 10
 ```
 
-If your meshes are not *watertight*, you may want to use [`mesh-to-sdf`](https://github.com/marian42/mesh_to_sdf) by adding `--mesh-to-sdf` to *step 2* above, or to subsitute it with any other preferred method. Mesh-to-sdf is, however, *very* slow and it may take a couple of weeks to process a large dataset of unclean meshes.
+*: If your meshes are not *watertight*, you may want to use [`mesh-to-sdf`](https://github.com/marian42/mesh_to_sdf) by adding `--mesh-to-sdf` to *step 2* above, or to subsitute it with any other preferred method. Mesh-to-sdf is, however, *very* slow and it may take a couple of weeks to process a large dataset of unclean meshes.
+
+**: Alternatively, if you wish to have settings *per part*, you can create a `JSON` file with the arguments and use `--specs <path/to/fit_prim_specs.json>`.
 
 
 ### Training
@@ -113,6 +116,18 @@ python3 scripts/evaluate.py <experiments/expdir> --parts --test
 The metric values will be saved per-shape under `<experiments/expdir>/evaluation/<epoch>_parts/`.
 
 
+## Datasets
+
+You can find our processed meshes, parts, and splits here:
+1. [Car](https://drive.google.com/file/d/19U-6TEBLq0pJbsKpFX0ptcLzGckdTxwj/view?usp=sharing)
+2. [Mixer](https://drive.google.com/file/d/1NtSLewlGysF2RgnXRsp2CfGmJQHzk3lV/view?usp=sharing)
+3. *Chair* (under work, current meshes are too heavy)
+
+For earch dataset, you will find the full shape meshes, the parts meshes, the specs for the primitive fitting (`fit_prim_specs.json`, see **Data** step 4 above), and the splits. 
+
+For the splits, `train.json` and `test.json` are the training and test splits we used in the paper, while `train_train.json` and `train_valid.json` are the training and validation splits (sub-samples from `train.json`) used to choose hyper-parameters.
+
+
 ## Citation
 If you found PartSDF useful for your work, please cite us:
 ```
@@ -129,7 +144,7 @@ If you found PartSDF useful for your work, please cite us:
 
 
 ## TODO
-* [ ] Make `scripts/data_fit_primitive.py` configurable *per-parts*
+* [X] Make `scripts/data_fit_primitive.py` configurable *per-parts*
 * [ ] Notebook for shape manipulation
 * [ ] Model checkpoints
 

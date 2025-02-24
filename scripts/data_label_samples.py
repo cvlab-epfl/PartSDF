@@ -37,16 +37,17 @@ def load_parts(partdir, instance, n_parts):
 def label_samples(args, datadir, outdir, instances, pid=None):
     """Generate data samples for the given meshes."""
     if pid is not None:  # print with process id
-        _print = print
-        def print(*args, **kwargs):
-            _print(f"P{pid}: ", sep="", end="", flush=True)
-            return _print(*args, **kwargs)
+        def iprint(*args, **kwargs):
+            print(f"P{pid}: ", sep="", end="", flush=True)
+            return print(*args, **kwargs)
+    else:
+        iprint = print
 
     n_shapes = len(instances)
-    print(f"{n_shapes} shapes to process:")
+    iprint(f"{n_shapes} shapes to process:")
     for i, instance in enumerate(instances):
         if (i+1) % max(1, n_shapes//5) == 0:
-            print(f"Generating for shape {i+1}/{n_shapes}...")
+            iprint(f"Generating for shape {i+1}/{n_shapes}...")
         
         ## Load the parts
         parts = load_parts(outdir, instance, args.n_parts)
@@ -67,9 +68,9 @@ def label_samples(args, datadir, outdir, instances, pid=None):
                     closest = {k: np.argmin(dists2[k], axis=0) for k in ['pos', 'neg']}
                     np.savez(filename, **closest)
                 except ValueError as err:
-                    print(f"Error for {instance} ({sample_type}): {err}")
+                    iprint(f"Error for {instance} ({sample_type}): {err}")
             
-    print("Done.")
+    iprint("Done.")
 
 
 def main(args):
