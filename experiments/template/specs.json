@@ -1,0 +1,59 @@
+{
+    "Description" : "Template specifications for a PartSDF experiment.",
+    "DataSource" : "data/car",
+    "TrainSplit" : "data/car/splits/train.json",
+    "ValidSplit" : null,
+    "TestSplit" :  "data/car/splits/test.json",
+    "SamplesDir" : "samples",
+    "SamplesFile" : "deepsdf.npz",
+    "ScenesPerBatch" : 16,
+    "SamplesPerScene" : 8192,
+    "Network": "PartSDF-PartSDF",
+    "NetworkSpecs" : {
+        "activation" : "relu",
+        "features" : null,
+        "layer_type" : "modulated",
+        "n_layers" : 8, 
+        "hidden_dim" : 512,
+        "part_bias" : true, 
+        "part_norm" : false,
+        "part_conv1d" : true,
+        "out_softmin" : null
+    },
+    "NetworkPretrained" : null,
+    "LatentPretrained" : null,
+    "LatentDim" : 256,
+    "LatentBound" : 1.0,
+    "LatentRegLambda" : 1e-4,
+    "ReconLoss" : "L1-Hard",
+    "ReconLossLambda" : 0.5,
+    "EikonalLossLambda" : null,
+    "Optimizer" : {
+        "Type" : "Adam",
+        "LearningRates" : [0.0005, 0.001]
+    },
+    "LearningRateSchedule" : {
+        "Type" : "MultiStep",
+        "Milestones" : [1600, 1800],
+        "Factor" : 0.35
+    },
+    "ClampingDistance" : 0.1,
+    "NumEpochs" : 2000,
+    "LogFrequency" : 10, 
+    "SnapshotFrequency" : 500,
+    "AdditionalSnapshots" : [ 100 ],
+    "RenderFrequency" : 200,
+    "ValidFrequency" : 200,
+    "Parts" : {
+        "NumParts" : 5,
+        "LatentDim" : 256,
+        "SamplesDir" : "parts/sample_labels",
+        "ReconLoss" : "L1-Hard",
+        "ReconLossLambda" : 1.0,
+        "IntersectionLambda" : 1.0,
+        "IntersectionTemp" : 0.02,
+        "LatentRegLambda" : 1e-4,
+        "UsePoses": true,
+        "ParametersDir": "parts/parameters"
+    }
+}

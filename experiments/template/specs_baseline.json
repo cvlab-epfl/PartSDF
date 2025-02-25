@@ -1,0 +1,45 @@
+{
+    "Description" : "Template specifications for a baseline experiment, not using parts.",
+    "WandbProject": "prim-inr",
+    "DataSource" : "data/car",
+    "TrainSplit" : "data/car/splits/train.json",
+    "ValidSplit" : null,
+    "TestSplit" :  "data/car/splits/test.json",
+    "SamplesDir" : "samples",
+    "SamplesFile" : "deepsdf.npz",
+    "ScenesPerBatch" : 16,
+    "SamplesPerScene" : 8192,
+    "Network": "LatentModulated",
+    "NetworkSpecs" : {
+        "hidden_dim" : 512,
+        "n_layers" : 8,
+        "dropout" : 0.0,
+        "weight_norm" : true,
+        "last_tanh" : false,
+        "activation" : "relu",
+        "features" : null
+    },
+    "NetworkPretrained" : null,
+    "LatentPretrained" : null,
+    "LatentDim" : 256,
+    "LatentBound" : 1.0,
+    "LatentRegLambda" : 1e-4,
+    "ReconLoss" : "L1-Hard",
+    "EikonalLossLambda" : null,
+    "Optimizer" : {
+        "Type" : "Adam",
+        "LearningRates" : [0.0005, 0.001]
+    },
+    "LearningRateSchedule" : {
+        "Type" : "MultiStep",
+        "Milestones" : [1600, 1800],
+        "Factor" : 0.35
+    },
+    "ClampingDistance" : 0.1,
+    "NumEpochs" : 2000,
+    "LogFrequency" : 10, 
+    "SnapshotFrequency" : 500,
+    "AdditionalSnapshots" : [ 100 ],
+    "RenderFrequency" : 200,
+    "ValidFrequency" : 200
+}
