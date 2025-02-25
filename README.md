@@ -116,8 +116,9 @@ python3 scripts/evaluate.py <experiments/expdir> --parts --test
 The metric values will be saved per-shape under `<experiments/expdir>/evaluation/<epoch>_parts/`.
 
 
-## Datasets
+## Datasets and checkpoints
 
+### Pre-processed datasets
 You can find our processed meshes, parts, and splits here:
 1. [Car](https://drive.google.com/file/d/19U-6TEBLq0pJbsKpFX0ptcLzGckdTxwj/view?usp=sharing)
 2. [Mixer](https://drive.google.com/file/d/1NtSLewlGysF2RgnXRsp2CfGmJQHzk3lV/view?usp=sharing)
@@ -125,8 +126,15 @@ You can find our processed meshes, parts, and splits here:
 
 For earch dataset, you will find the full shape meshes, the parts meshes, the specs for the primitive fitting (`fit_prim_specs.json`, see **Data** step 4 above), and the splits. 
 
-For the splits, `train.json` and `test.json` are the training and test splits we used in the paper, while `train_train.json` and `train_valid.json` are the training and validation splits (sub-samples from `train.json`) used to choose hyper-parameters.
+For the splits, `train.json` and `test.json` are the training and test splits we used in the paper, while `train_train.json` and `train_valid.json` are the training and validation splits (sub-sampled from `train.json`) used to choose hyper-parameters.
 
+### Pre-trained models checkpoints
+You can find the checkpoints of our trained models here:
+1. [Car](https://drive.google.com/file/d/1pBR8ptTp_VyBFlZK9oxtRnHrdw8CgWsr/view?usp=sharing)
+2. [Mixer](https://drive.google.com/file/d/1qF4xG8y5DR0iWR7bE0W79siW4V5Z6BNy/view?usp=sharing)
+3. [Chair](https://drive.google.com/file/d/1H5Oig-HqR6sF3DNiWvpfavTNVEK6olSF/view?usp=sharing)
+
+These folders can be decompressed under `experiments/`.
 
 ## Citation
 If you found PartSDF useful for your work, please cite us:
@@ -146,7 +154,7 @@ If you found PartSDF useful for your work, please cite us:
 ## TODO
 * [X] Make `scripts/data_fit_primitive.py` configurable *per-parts*
 * [ ] Notebook for shape manipulation
-* [ ] Model checkpoints
+* [X] Model checkpoints
 
 
 -------------------------------------------------------------

@@ -85,7 +85,7 @@ def main(args=None):
     use_poses = specs["Parts"].get("UsePoses", False)
     paramdir = specs["Parts"].get("ParametersDir", None) if use_poses else None
     dataset = PartSdfDataset(specs["DataSource"], specs["TrainSplit"], specs["SamplesPerScene"], 
-                             specs["SamplesDir"], specs["SamplesFile"], specs["Parts"]["Type"], 
+                             specs["SamplesDir"], specs["SamplesFile"],
                              specs["Parts"]["SamplesDir"], specs["Parts"].get("SamplesFile", None))
     dataloader = DataLoader(dataset, batch_size=specs["ScenesPerBatch"], shuffle=True, num_workers=args.workers, pin_memory=True)
     len_dataset = len(dataset)

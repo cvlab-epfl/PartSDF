@@ -158,7 +158,7 @@ class Renderer(nn.Module):
             self.filter_y.double()
 
         # Pixel coordinates
-        self.X, self.Y = torch.meshgrid(torch.arange(0, H), torch.arange(0, W))
+        self.X, self.Y = torch.meshgrid(torch.arange(0, H), torch.arange(0, W), indexing='ij')
         self.X = (2*(0.5 + self.X.unsqueeze(0).unsqueeze(-1))/H - 1).float().to(device)
         self.Y = (2*(0.5 + self.Y.unsqueeze(0).unsqueeze(-1))/W - 1).float().to(device)
 
@@ -166,7 +166,7 @@ class Renderer(nn.Module):
         # get range
         range = np.linspace(-(k // 2), k // 2, k)
         # compute a grid the numerator and the axis-distances
-        x, y = np.meshgrid(range, range)
+        x, y = np.meshgrid(range, range, indexing='xy')
         sobel_2D_numerator = x
         sobel_2D_denominator = (x ** 2 + y ** 2)
         sobel_2D_denominator[:, k // 2] = 1  # avoid division by zero
