@@ -112,7 +112,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="label data samples for meshes.")
     parser.add_argument("datadir", type=str, help="directory of the dataset")
-    parser.add_argument("n_parts", type=int, help="max number of parts used")
+    parser.add_argument("n_parts", type=int, help="max number of parts per shape")
 
     parser.add_argument("--partdir", default="parts", type=str, help="name of the subdir where the part decomposition will be saved")
 

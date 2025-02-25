@@ -258,9 +258,9 @@ def fit_primitives(args, partdir, instances, pid=None):
 
         # Verify if already computed
         if not args.overwrite and \
-           os.path.exists(os.path.join(paramdir, instance, "quaternions.npy")) and \
-           os.path.exists(os.path.join(paramdir, instance, "translations.npy")) and \
-           os.path.exists(os.path.join(paramdir, instance, "scales.npy")):
+           os.path.exists(os.path.join(paramdir, "quaternions.npy")) and \
+           os.path.exists(os.path.join(paramdir, "translations.npy")) and \
+           os.path.exists(os.path.join(paramdir, "scales.npy")):
             continue
 
         # All parts' parameters
@@ -354,7 +354,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Primitive fitting for parts.")
     parser.add_argument("datadir", type=str, help="directory of the dataset")
-    parser.add_argument("n_parts", type=int, help="max number of parts used")
+    parser.add_argument("n_parts", type=int, help="max number of parts per shape")
     
     parser.add_argument("--partdir", default="parts", type=str, help="name of the subdir where the part decomposition will be saved")
 

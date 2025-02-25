@@ -70,7 +70,7 @@ The final data file structure will ressemble this:
 
 For the following instructions, the processing can be parallelized over the shapes on `nproc` sub-processes to speed things up. Choose `nproc` based on your machine, below we use `--nproc 10` as an example.
 
-Build the data as follow:
+Build the data as follow: (replace `<n_parts>` by the number of parts in the dataset, *e.g.*, 5 for cars)
 ```bash
 # 1. Normalize the meshes and parts to the [-0.9, 0.9]^3 cube
 python3 scripts/data_normalize_meshes.py <path/to/dataset_raw/meshes> <path/to/dataset> --nproc 10

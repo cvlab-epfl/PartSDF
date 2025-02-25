@@ -118,7 +118,7 @@ def get_part_poses(n_shapes, n_parts, datasource=None, instances=None, rotation=
     """
     Create and initialize part poses, possibly from existing ones.
 
-    A single pose-embedding will be of dimension (n_parts, R+t).
+    A single pose-embedding will be of dimension (n_parts, R+t+s).
     """
     poses = PartPose(n_shapes, n_parts, rotation=rotation, translation=translation, 
                      scale=scale, freeze=freeze, device=device)
