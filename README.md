@@ -122,7 +122,7 @@ The metric values will be saved per-shape under `<experiments/expdir>/evaluation
 You can find our processed meshes, parts, and splits here:
 1. [Car](https://drive.google.com/file/d/19U-6TEBLq0pJbsKpFX0ptcLzGckdTxwj/view?usp=sharing)
 2. [Mixer](https://drive.google.com/file/d/1NtSLewlGysF2RgnXRsp2CfGmJQHzk3lV/view?usp=sharing)
-3. *Chair* (under work, current meshes are too heavy)
+3. [Chair](https://drive.google.com/file/d/1qIYt12X3n-Jn_qbMgYZMaFLzqNLupSDP/view?usp=sharing)
 
 For earch dataset, you will find the full shape meshes, the parts meshes, the specs for the primitive fitting (`fit_prim_specs.json`, see **Data** step 4 above), and the splits. 
 
@@ -153,8 +153,8 @@ If you found PartSDF useful for your work, please cite us:
 
 ## TODO
 * [X] Make `scripts/data_fit_primitive.py` configurable *per-parts*
-* [ ] Notebook for shape manipulation
 * [X] Model checkpoints
+* [ ] Notebook for shape manipulation
 
 
 -------------------------------------------------------------
