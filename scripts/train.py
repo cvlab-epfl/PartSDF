@@ -339,11 +339,13 @@ def main(args=None):
             renders = viz.render_meshes(meshes, size=224, aa_factor=2)
             renders_p = viz.render_meshes(parts, size=224, use_texture=True, aa_factor=2)
             ws.save_renders(expdir, renders, epoch)
+            ws.save_renders(expdir, renders_p, f"_parts{epoch}")
             # Validation renders
             if valid_frequency is not None and epoch % valid_frequency == 0:
                 renders = viz.render_meshes(valid_meshes, size=224, aa_factor=2)
                 renders_p = viz.render_meshes(valid_parts, size=224, use_texture=True, aa_factor=2)
                 ws.save_renders(expdir, renders, f"valid_{epoch}")
+                ws.save_renders(expdir, renders_p, f"valid_parts_{epoch}")
         if epoch in snapshot_epochs:
             ws.save_experiment(expdir, epoch, model, latents, optimizer, scheduler)
         if epoch % log_frequency == 0:

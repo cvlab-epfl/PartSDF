@@ -63,7 +63,8 @@ def label_samples(args, datadir, outdir, instances, pid=None):
                 samples = np.load(filename_sample)
                 # Find closest parts
                 try:
-                    dists2 = {k: np.stack([distance_to_mesh(samples[k], parts[i]) for i in range(5)], axis=0)
+                    dists2 = {k: np.stack([distance_to_mesh(samples[k], parts[i]) 
+                                           for i in range(args.n_parts)], axis=0)
                             for k in ['pos', 'neg']}
                     closest = {k: np.argmin(dists2[k], axis=0) for k in ['pos', 'neg']}
                     np.savez(filename, **closest)
