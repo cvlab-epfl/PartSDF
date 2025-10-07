@@ -141,3 +141,6 @@ dmypy.json
 
 # exclude experiments
 /experiments/
+
+# exclude miscellaneous files
+/misc/

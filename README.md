@@ -4,7 +4,8 @@ This is the PyTorch implementation of the paper "**PartSDF: Part-Based Implicit 
 
 <p style="display: flex; align-items: center;">
     <img src="imgs/pipeline.png" alt="PartSDF pipeline" height="300"/>
-    <img src="imgs/interpolation.gif" alt="Interpolation example" height="250"/>
+    <!-- <img src="imgs/interpolation.gif" alt="Interpolation example" height="250"/> -->
+    <img src="imgs/drivaer_manip.gif" alt="DrivAer manipulation" height="250"/>
 </p>
 
 ## File structure
@@ -141,7 +142,7 @@ If you found PartSDF useful for your work, please cite us:
 ```
 @misc{talabot2025partsdf,
     title={PartSDF: Part-Based Implicit Neural Representation for Composite 3D Shape Parametrization and Optimization}, 
-    author={Nicolas Talabot and Olivier Clerc and Arda Cinar Demirtas and Doruk Oner and Pascal Fua},
+    author={Nicolas Talabot and Olivier Clerc and Arda Cinar Demirtas and Hieu Le and Doruk Oner and Pascal Fua},
     year={2025},
     eprint={2502.12985},
     archivePrefix={arXiv},
@@ -149,12 +150,6 @@ If you found PartSDF useful for your work, please cite us:
     url={https://arxiv.org/abs/2502.12985}
 }
 ```
-
-
-## TODO
-* [X] Make `scripts/data_fit_primitive.py` configurable *per-parts*
-* [X] Model checkpoints
-* [ ] Notebook for shape manipulation
 
 
 -------------------------------------------------------------
