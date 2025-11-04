@@ -119,23 +119,29 @@ The metric values will be saved per-shape under `<experiments/expdir>/evaluation
 
 ## Datasets and checkpoints
 
-### Pre-processed datasets
-You can find our processed meshes, parts, and splits here:
-1. [Car](https://drive.google.com/file/d/19U-6TEBLq0pJbsKpFX0ptcLzGckdTxwj/view?usp=sharing)
-2. [Mixer](https://drive.google.com/file/d/1NtSLewlGysF2RgnXRsp2CfGmJQHzk3lV/view?usp=sharing)
-3. [Chair](https://drive.google.com/file/d/1qIYt12X3n-Jn_qbMgYZMaFLzqNLupSDP/view?usp=sharing)
+You can find our the data we used in the main text and the corresponding checkpoints of the pre-trained model [here](https://zenodo.org/records/17466765).
 
-For earch dataset, you will find the full shape meshes, the parts meshes, the specs for the primitive fitting (`fit_prim_specs.json`, see **Data** step 4 above), and the splits. 
+The **data** contains the meshes, parts, part poses, and splits. For space constraints, SDF samples and labels are not provided and need to be generated, see **Data** step 2 and 3 above.
 
 For the splits, `train.json` and `test.json` are the training and test splits we used in the paper, while `train_train.json` and `train_valid.json` are the training and validation splits (sub-sampled from `train.json`) used to choose hyper-parameters.
 
-### Pre-trained models checkpoints
-You can find the checkpoints of our trained models here:
-1. [Car](https://drive.google.com/file/d/1pBR8ptTp_VyBFlZK9oxtRnHrdw8CgWsr/view?usp=sharing)
-2. [Mixer](https://drive.google.com/file/d/1qF4xG8y5DR0iWR7bE0W79siW4V5Z6BNy/view?usp=sharing)
-3. [Chair](https://drive.google.com/file/d/1H5Oig-HqR6sF3DNiWvpfavTNVEK6olSF/view?usp=sharing)
+The **checkpoints** containt the pre-trained model weights, training latents and poses, and experimental specifications. These folders can be decompressed under `experiments/`.
+
+<details>
+<summary><b>Older data links</b></summary>
+
+Below are older links to our data and checkpoints. Note that they may become unavailable in the future.
+
+#### Datasets
+You can find our processed meshes, parts, and splits here: [Car](https://drive.google.com/file/d/19U-6TEBLq0pJbsKpFX0ptcLzGckdTxwj/view?usp=sharing), [Mixer](https://drive.google.com/file/d/1NtSLewlGysF2RgnXRsp2CfGmJQHzk3lV/view?usp=sharing), and [Chair](https://drive.google.com/file/d/1qIYt12X3n-Jn_qbMgYZMaFLzqNLupSDP/view?usp=sharing).
+
+For earch dataset, you will find the full shape meshes, the parts meshes, the specs for the primitive fitting (`fit_prim_specs.json`, see **Data** step 4 above), and the splits. SDF samples and labels and part poses are not provided and need to be generated, see **Data** step 2, 3, and 4 above.
+
+#### Checkpoints
+You can find the checkpoints of our trained models here:, [Car](https://drive.google.com/file/d/1pBR8ptTp_VyBFlZK9oxtRnHrdw8CgWsr/view?usp=sharing), [Mixer](https://drive.google.com/file/d/1qF4xG8y5DR0iWR7bE0W79siW4V5Z6BNy/view?usp=sharing), and [Chair](https://drive.google.com/file/d/1H5Oig-HqR6sF3DNiWvpfavTNVEK6olSF/view?usp=sharing).
 
 These folders can be decompressed under `experiments/`.
+</details>
 
 ## Citation
 If you found PartSDF useful for your work, please cite us:
