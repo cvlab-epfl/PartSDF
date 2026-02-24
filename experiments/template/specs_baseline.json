@@ -26,6 +26,7 @@
     "LatentRegLambda" : 1e-4,
     "ReconLoss" : "L1-Hard",
     "EikonalLossLambda" : null,
+    "WeightNormRegLambda" : null,
     "Optimizer" : {
         "Type" : "Adam",
         "LearningRates" : [0.0005, 0.001]

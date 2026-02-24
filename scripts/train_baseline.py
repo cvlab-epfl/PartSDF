@@ -125,6 +125,7 @@ def main(args=None):
     loss_recon = get_loss_recon(specs["ReconLoss"], reduction='none').to(device)
     latent_reg = specs["LatentRegLambda"]
     eikonal_lambda = specs.get("EikonalLossLambda", None)
+    weight_norm_reg = specs.get("WeightNormRegLambda", None)
     
     optimizer = get_optimizer([model, latents], type=specs["Optimizer"].pop("Type"),
                               lrs=specs["Optimizer"].pop("LearningRates"),
@@ -168,6 +169,8 @@ def main(args=None):
         loss_names += ['loss-val']
     if eikonal_lambda is not None and eikonal_lambda > 0.:
         loss_names += ['loss_eik']
+    if weight_norm_reg is not None and weight_norm_reg > 0.:
+        loss_names += ['loss_wnreg']
     for key in loss_names + ['lr', 'lr_lat', 'lat_norm']:
         if key not in history:
             history[key] = []
@@ -201,6 +204,14 @@ def main(args=None):
                 loss_eikonal = (grads.norm(dim=-1) - 1.).square().mean()
                 loss = loss + eikonal_lambda * loss_eikonal
                 running_losses['loss_eik'] += loss_eikonal.detach() * batch_size
+            # Weight norm regularization
+            if weight_norm_reg is not None and weight_norm_reg > 0.0:
+                loss_wnreg = 0.0
+                for m in model.modules():
+                    if isinstance(m, torch.nn.Linear) and hasattr(m, "weight_g"):
+                        loss_wnreg = loss_wnreg + m.weight_g.square().sum()
+                loss = loss + weight_norm_reg * loss_wnreg
+                running_losses["loss_wnreg"] += loss_wnreg.detach() * batch_size
             # Latent regularization
             if latent_reg is not None and latent_reg > 0.:
                 loss_reg = min(1, epoch / 100) * batch_latents[:,0,:].square().sum() / batch_size
