@@ -9,7 +9,7 @@ This is the PyTorch implementation of the paper "**PartSDF: Part-Based Implicit 
 </p>
 
 ## File structure
-This repository is organized as follow:
+This repository is organized as follows:
 
     PartSDF/
     ├── experiments/        <- Experimental config and results
