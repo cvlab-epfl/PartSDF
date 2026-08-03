@@ -95,12 +95,14 @@ class DeepSDF(nn.Module):
         # Compute input features, then concatenate them with the latent code
         feats = self.features(xyz) if self.features is not None else xyz
         out = torch.cat([lat.expand(feats.shape[:-1] + (-1,)), feats], dim=-1)
+        if self.in_insert:
+            input_ = out
 
         for i, fc in enumerate(self.fcs):
             out = fc(out)
 
             if (i + 1) in self.in_insert:
-                out = torch.cat([out, feats], dim=-1)
+                out = torch.cat([out, input_], dim=-1)
         
         if self.output_scale is not None:
             out = out * self.output_scale

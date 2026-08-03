@@ -90,7 +90,7 @@ def main(args=None):
     datasource = os.path.join(specs["DataSource"], specs["SamplesDir"])
     samplefile = specs["SamplesFile"]
     # Does the model use part decomposition? (and parts poses)
-    use_parts = specs["Network"].split("-")[0].lower().startswith("part")
+    use_parts = specs["Network"].lower().startswith("part")
     use_poses = specs["Parts"].get("UsePoses", False) if use_parts else False
     paramdir = specs["Parts"].get("ParametersDir", None) if use_poses else None
 

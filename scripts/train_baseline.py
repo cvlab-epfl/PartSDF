@@ -129,7 +129,7 @@ def main(args=None):
     
     optimizer = get_optimizer([model, latents], type=specs["Optimizer"].pop("Type"),
                               lrs=specs["Optimizer"].pop("LearningRates"),
-                              kwargs=specs["Optimizer"])
+                              **specs["Optimizer"])
     scheduler = get_scheduler(optimizer, **specs["LearningRateSchedule"])
 
     # Resume from checkpoint
@@ -260,7 +260,7 @@ def main(args=None):
             history[name].append(running_losses[name].item() / len_dataset)
         history["lr"].append(optimizer.state_dict()["param_groups"][0]["lr"])
         history["lr_lat"].append(optimizer.state_dict()["param_groups"][1]["lr"])
-        lat_norms = torch.norm(latents.weight.data.detach(), dim=1).cpu()
+        lat_norms = torch.norm(latents.weight.data.detach(), dim=-1).cpu()
         history["lat_norm"].append(lat_norms.mean())
         if valid_frequency is not None and epoch % valid_frequency == 0:
             history["loss-val"].append(valid_metrics['loss'])

@@ -61,11 +61,11 @@ def normalize_parts(args, source, dest, partdir, instances, pid=None):
         parts = [fn for fn in parts if re.fullmatch(r"part[0-9]+.obj", fn)]
 
         # Verify if all normalized parts already exist
-        skip = args.overwrite
+        incomplete = args.overwrite
         for part in parts:
-            skip = skip or not os.path.isfile(os.path.join(dest, partdir, "meshes", instance, part))
-            if skip:
-                continue
+            incomplete = incomplete or not os.path.isfile(os.path.join(dest, partdir, "meshes", instance, part))
+        if not incomplete:
+            continue
 
         # Load the normalization of the corresponding mesh
         norm = np.load(os.path.join(normdir, instance + ".npz"))
